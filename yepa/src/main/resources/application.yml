@@ -1,0 +1,24 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: chong-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/yellow?serverTimezone=UTC&characterEncoding=UTF-8&useUnicode=true
+    username: root
+    password: "0421"
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  type-aliases-package: com.example.yepa.pojo
+  configuration:
+    map-underscore-to-camel-case: true  #�շ�����
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#
+logging:
+  level:
+    com.example.yepa: DEBUG
+
+

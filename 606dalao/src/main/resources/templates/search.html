@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ttSearch</title>
+</head>
+<link href="http://g.alicdn.com/sj/dpl/1.5.1/css/sui.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://g.alicdn.com/sj/dpl/1.5.1/js/sui.min.js"></script>
+<style>
+
+</style>
+<body>
+
+<div id="itemApp">
+    <div class='sui-container'>
+        <!--搜索-->
+        <div align="center">
+            <input type="text" v-model="searchData.key"
+                   class="input-large">
+            <a  class="sui-btn btn-bordered btn-xlarge btn-success" @click="search()">搜一下</a>
+        </div>
+        <!--项-->
+        <div class="grid-demo" align="center">
+            <div class="sui-row-fluid" >
+                <table class="sui-table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>神秘的URL</th>
+                        <th>神秘的Password</th>
+                        <th>神秘的ZipPassword</th>
+                    </tr>
+                    </thead>
+                    <tbody  v-for="item in pageData.currentitems">
+                    <tr>
+                        <td>{{item.title}}</td>
+                        <td>{{item.baiduyunUrl}}</td>
+                        <td>{{item.baiduyunPass}}</td>
+                        <td>{{item.zipPassword}}</td>
+                        <td v-for="im in item.imgs">
+                            <img src="{{im}}" alt="">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <!--分页-->
+        <div class="sui-pagination pagination-large html-editor-align-center" align="center">
+            <ul>
+                <li class="prev disabled"><a  @click="prePage">«上一页</a></li>
+
+                当前{{searchData.page}}页
+
+                <li class="next"><a  @click="nextPage">下一页»</a></li>
+            </ul>
+            <div><span>共{{pageData.currentTotalPage}}页&nbsp;</span></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script >
+    var itemVm = new Vue({
+    el: "#itemApp",
+    data: {
+        searchData:{
+            key:"",
+            page:1
+        },
+        pageData:{
+            currentTotalPage:0,
+            currentitems:[]
+        },
+        error:false
+    },
+    methods:{
+        search:function () {
+            console.log(this.searchData)
+            axios.get('/search', {
+                params: {
+                    key:this.searchData.key,
+                    page:this.searchData.page
+                }
+            }).then( (response) => {
+
+                error = false;
+                console.log(response.data)
+                this.pageData.currentitems=response.data.items
+                this.pageData.currentTotalPage=response.data.totalPage
+            }).catch(function (response) {
+                error = true;
+            });
+
+        },
+        prePage:function() {
+            this.searchData.page--;
+            this.search()
+        },
+        nextPage:function() {
+            this.searchData.page++;
+            this.search()
+        }
+
+    }
+});
+</script>
+</html>
